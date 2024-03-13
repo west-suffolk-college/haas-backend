@@ -4,18 +4,19 @@ const express = require("express");
 const passport = require('passport');
 const session = require('express-session');
 
+const port = process.env.PORT || 3000;
+
 var OpenIDConnectStrategy = require('passport-openidconnect');
 
 
-
 passport.use(new OpenIDConnectStrategy({
-            issuer: process.env["ODIC_SERVER"],
-            authorizationURL: process.env["ODIC_SERVER"] + "/authorize",
-            tokenURL: process.env["ODIC_SERVER"] + "/token",
-            userInfoURL: process.env["ODIC_SERVER"] + "/userinfo",
-            clientID: process.env['CLIENT_ID'],
-            clientSecret: process.env['CLIENT_SECRET'],
-            callbackURL: 'https://client.example.org/cb'
+            issuer: process.env.ODIC_SERVER,
+            authorizationURL: process.env.ODIC_SERVER + "/protocol/openid-connect/auth",
+            tokenURL: process.env.ODIC_SERVER + "/protocol/openid-connect/token",
+            userInfoURL: process.env.ODIC_SERVER + "/protocol/openid-connect/userinfo",
+            clientID: process.env.CLIENT_ID,
+            clientSecret: process.env.CLEINT_SECRET,
+            callbackURL: "http://127.0.0.1:" + port + "/v1/auth/callback"
         },
         function verify(issuer, profile, cb) {
             db.get('SELECT * FROM federated_credentials WHERE provider = ? AND subject = ?', [
@@ -31,7 +32,6 @@ passport.use(new OpenIDConnectStrategy({
                         profile.displayName
                     ], function(err) {
                         if (err) { return cb(err); }
-
                         var id = this.lastID;
                         db.run('INSERT INTO federated_credentials (user_id, provider, subject) VALUES (?, ?, ?)', [
                             id,
@@ -66,17 +66,24 @@ const router = express.Router();
 
 // Add a 'get' method to express router for our test route
 router.get("/", function (req, res) {
-    res.send({ msg: "Testing" });
+    res.send({ msg: "/auth/login and /callback" });
 });
 
 router.use(session({
-    secret: process.env["CLIENT_SECRET"],
+    secret: process.env.CLEINT_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: { secure: true }
 }));
 
 router.get('/login', passport.authenticate('openidconnect'));
+
+router.get('/callback',
+    passport.authenticate('openidconnect', { failureRedirect: '/v1/auth/', failureMessage: true }),
+    function(req, res) {
+        res.redirect('/v1/');
+});
+
 
 
 // Exports the router object
