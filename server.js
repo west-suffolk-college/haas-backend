@@ -5,13 +5,11 @@ const session = require('express-session');
 
 //configure session
 app.use(session({
-    secret: process.env.CLEINT_SECRET,
+    secret: process.env.CLIENT_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: { secure: false}
 }));
-
-
 
 // Configure body-parser settings
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -27,7 +25,7 @@ const errorRoute = require("./api/routes/error")
 // Setup your api routes with express
 app.use("/v1/auth", authRoutes);
 app.use("/error", errorRoute);
-app.use("/v1/test", testRoute);
+
 
 // Listen on port 3000 if environment variable is not set
 const port = process.env.PORT || 3000;

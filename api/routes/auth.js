@@ -35,7 +35,7 @@ passport.use("oidc", new OpenIDConnectStrategy({
 // Include express router middleware
 const router = express.Router();
 
-var isAuthenticated = function (req, res, next) {
+const isAuthenticated = function (req, res, next) {
     if (req.isAuthenticated())
         return next();
     res.json("not authenticated");
