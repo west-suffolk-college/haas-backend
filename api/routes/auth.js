@@ -1,4 +1,4 @@
-
+ "use strict";
 // Include express
 const express = require("express");
 const passport = require('passport');
@@ -39,6 +39,7 @@ const isAuthenticated = function (req, res, next) {
     if (req.isAuthenticated())
         return next();
     res.json("not authenticated");
+    res.redirect("/login")
 }
 
 
@@ -53,13 +54,13 @@ router.use("/login", passport.authenticate("oidc"));
 
 router.use("/callback",
     passport.authenticate("oidc",{
-        failureRedirect: "/error"
+        failureRedirect: "/error",
+        failWithError: true
     }),
     (req, res) => {
-        res.redirect("/profile");
+        res.redirect(":/error/success");
     }
 );
-
 
 
 // Exports the router object

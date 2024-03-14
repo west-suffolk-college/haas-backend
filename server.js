@@ -1,3 +1,4 @@
+"use strict";
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
@@ -22,7 +23,7 @@ const authRoutes = require("./api/routes/auth");
 const errorRoute = require("./api/routes/error")
 
 
-// Setup your api routes with express
+// Set up your api routes with express
 app.use("/v1/auth", authRoutes);
 app.use("/error", errorRoute);
 
