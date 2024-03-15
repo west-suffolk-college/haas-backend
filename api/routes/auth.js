@@ -2,16 +2,17 @@
 // Include express
 const express = require("express");
 const passport = require('passport');
-const OpenIDConnectStrategy = require('passport-openidconnect');
-// set port 3000 if environment variable is not set
-const port = process.env.PORT || 3000;
- // Include express router middleware
- const router = express.Router();
+const router = express.Router();
+const LocalStrategy = require('passport-local');
+ const {flatten} = require("express/lib/utils");
+
+
 
 //setup passport
 const authRoutes = function (app) {
     app.use(passport.initialize());
     app.use(passport.authenticate('session'));
+
     passport.serializeUser(function(user, done) {
         done(null, user);
     });
@@ -19,21 +20,18 @@ const authRoutes = function (app) {
         done(null, user);
     });
 
-    passport.use("oidc", new OpenIDConnectStrategy({
-        issuer: process.env.ODIC_SERVER,
-        authorizationURL: process.env.ODIC_SERVER + "/protocol/openid-connect/auth",
-        tokenURL: process.env.ODIC_SERVER + "/protocol/openid-connect/token",
-        userInfoURL: process.env.ODIC_SERVER + "/protocol/openid-connect/userinfo",
-        clientID: process.env.CLIENT_ID,
-        clientSecret: process.env.CLIENT_SECRET,
-        callbackURL: "http://127.0.0.1:" + port + "/v1/auth/callback",
-        response_types: ['code'],
-        scope: 'openid profile'
-    }, (issuer, profile, done) => {
-        return done(null, profile);
-    }));
 
 
+passport.use("local", new LocalStrategy({},
+    async (username, password, done) => {
+    if (username == "test" ) {
+        console.log("user: " + username + "authenticated");
+        return done(null, username, {message: "authenticated"});
+    } else {
+        console.log("somethings up");
+        return done(null, false);
+    }
+    }))
     const isAuthenticated = function (req, res, next) {
         if (req.isAuthenticated()) {
             return next();
@@ -48,11 +46,17 @@ const authRoutes = function (app) {
     });
 
 
-    router.use("/login", passport.authenticate("oidc"));
+    router.use("/login", passport.authenticate("local"));
+
+    app.delete("/logout", (req,res) => {
+        req.logOut()
+        res.redirect("/login")
+        console.log(`-------> User Logged out`)
+    })
 
 
     router.use("/callback",
-        passport.authenticate("oidc",{
+        passport.authenticate("local",{
             failureRedirect: "/error",
             failWithError: true,
             successRedirect: "/error/success"
