@@ -4,7 +4,6 @@ const express = require("express");
 const passport = require('passport');
 const router = express.Router();
 const LocalStrategy = require('passport-local');
-const {request, response} = require("express");
 
 const isAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
@@ -19,12 +18,11 @@ const authRoutes = function (app) {
             console.log("user: " + username + "is authenticated");
             let auth_user = {
                 "id": 1234,//use db to get any values needed
-                "name": "test"
+                "name": username
             }
             return done(null, auth_user)
-        } else {
-            return done(null, false)
         }
+        return done(null, false)
     }
     app.use(passport.initialize());
     app.use(passport.authenticate('session'));
@@ -46,7 +44,6 @@ const authRoutes = function (app) {
 
 
     router.use("/login", passport.authenticate("local", {
-        successReturnToOrRedirect: "/v1/auth",
         failureRedirect: "/error"
     }));
 

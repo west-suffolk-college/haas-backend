@@ -13,8 +13,7 @@
     "express-session": "^1.18.0",
     "express-validator": "^7.0.1",
     "passport": "^0.7.0",
-    "passport-local": "^1.0.0",
-    "connect-ensure-login": "^0.1.1"
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
     "nodemon": "^1.14.12"
