@@ -4,13 +4,10 @@ const express = require("express");
 const router = express.Router();
 
 const errorRoutes = function (app) {
-    router.get("/", function (req, res) {
-        res.send({ msg: "there has been an error" });//change to res.render with html
-        console.log("hit the error page")
-    });
-
-    router.get("/success", function (req, res) {
-        res.send({ msg: "the successful error page" });//change to res.render with html
+    router.get("/", (req, res) => {
+        res.status(520);
+        res.set("Connection", "close");
+        res.json({error:true, error_message : "something went wrong"});
     });
     return router;
 }

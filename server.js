@@ -21,11 +21,12 @@ app.use(bodyParser.json());
 // Include auth.js file from the api directory
 const { authRoutes } = require("./api/routes/auth");
 const { errorRoutes } = require("./api/routes/error");
-
+const { userRoutes } = require("./api/routes/user")
 
 // Set up your api routes with express
 //app.use("/v1/auth", authRoutes);
 app.use("/v1/auth", authRoutes(app));
+app.use("/v1/user", userRoutes(app));
 app.use("/error", errorRoutes(app));
 
 // Listen on port 3000 if environment variable is not set
