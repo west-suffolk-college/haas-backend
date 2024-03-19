@@ -22,10 +22,10 @@ const authRoutes = function (app) {
                 "name": "test"
             }
             return done(null, auth_user)
-        } else {
-            return done(null, false)
-        }
+        } 
+        return done(null, false)
     }
+    
     app.use(passport.initialize());
     app.use(passport.authenticate('session'));
     passport.use("local", new LocalStrategy(authMethod))
