@@ -35,7 +35,7 @@ const authRoutes = function (app) {
         done(null, user);
     });
 
-// Add a 'get' method to express router for our test route
+    // Add a 'get' method to express router for our test route
     router.get("/", isAuthenticated, (req, res) => {
         res.status(200);
         res.set("Connection", "close");
@@ -44,7 +44,8 @@ const authRoutes = function (app) {
 
 
     router.use("/login", passport.authenticate("local", {
-        failureRedirect: "/error"
+        failureRedirect: "/error",
+        successReturnToOrRedirect: "/v1/auth/"
     }));
 
     router.delete('/logout', function(req, res, next){
