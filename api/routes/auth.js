@@ -15,7 +15,7 @@ const isAuthenticated = (req, res, next) => {
 const authRoutes = function (app) {
     const authMethod = (username, password, done) => {
         if (username === "test") {
-            console.log("user: " + username + "is authenticated");
+            console.log("user: " + username + " is authenticated");
             let auth_user = {
                 "id": 1234,//use db to get any values needed
                 "name": username

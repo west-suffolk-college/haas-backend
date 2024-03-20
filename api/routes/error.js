@@ -1,6 +1,5 @@
 "use strict";
 const express = require("express");
-//const port = process.env.PORT || 3000;
 const router = express.Router();
 
 const errorRoutes = function (app) {
